@@ -1,0 +1,189 @@
+[
+  {
+    "id": 1,
+    "title": "Tamil Nadu woman arrested for dowry harassment",
+    "category": "Crime",
+    "location": "Chennai",
+    "latitude": 13.0827,
+    "longitude": 80.2707,
+    "source": "DNAindia",
+    "description": "A woman in Tamil Nadu was arrested regarding a dowry harassment case, highlighting legal enforcement against dowry-related crimes.",
+    "date_published": "2025-09-21T09:00:00Z"
+  },
+  {
+    "id": 2,
+    "title": "Bihar floods Death toll rises to 25",
+    "category": "Disasters",
+    "location": "Patna",
+    "latitude": 25.5941,
+    "longitude": 85.1376,
+    "source": "Times of India",
+    "description": "Bihar endured severe floods leading to a death toll of 25 people, emphasizing the ongoing natural disaster and relief efforts.",
+    "date_published": "2025-09-20T08:30:00Z"
+  },
+  {
+    "id": 3,
+    "title": "Cyclone Gati hits Odisha coast",
+    "category": "Disasters",
+    "location": "Bhubaneswar",
+    "latitude": 20.2961,
+    "longitude": 85.8245,
+    "source": "The Hindu",
+    "description": "Cyclone Gati made landfall on the Odisha coast causing significant damage and disruption, with warnings and evacuations underway.",
+    "date_published": "2025-09-21T05:00:00Z"
+  },
+  {
+    "id": 4,
+    "title": "Delhi Metro to extend routes to Dwarka",
+    "category": "Technology",
+    "location": "Delhi",
+    "latitude": 28.7041,
+    "longitude": 77.1025,
+    "source": "NDTV",
+    "description": "Delhi Metro plans to extend its routes to Dwarka, enhancing urban transport infrastructure in the capital.",
+    "date_published": "2025-09-19T14:45:00Z"
+  },
+  {
+    "id": 5,
+    "title": "Bengaluru traffic congestion worsens",
+    "category": "Society",
+    "location": "Bengaluru",
+    "latitude": 12.9716,
+    "longitude": 77.5946,
+    "source": "The Times of India",
+    "description": "Traffic congestion in Bengaluru has escalated, affecting daily commutes and quality of urban life.",
+    "date_published": "2025-09-20T18:15:00Z"
+  },
+  {
+    "id": 6,
+    "title": "Kerala government announces free bus rides",
+    "category": "Society",
+    "location": "Thiruvananthapuram",
+    "latitude": 8.5241,
+    "longitude": 76.9366,
+    "source": "The Hindu",
+    "description": "Kerala state government launched a program offering free bus rides to support public transport users.",
+    "date_published": "2025-09-21T07:30:00Z"
+  },
+  {
+    "id": 7,
+    "title": "Hyderabad police bust drug racket",
+    "category": "Crime",
+    "location": "Hyderabad",
+    "latitude": 17.385,
+    "longitude": 78.4867,
+    "source": "Times of India",
+    "description": "Law enforcement in Hyderabad successfully dismantled a major drug trafficking network.",
+    "date_published": "2025-09-20T11:20:00Z"
+  },
+  {
+    "id": 8,
+    "title": "Mumbai local train services resume",
+    "category": "Society",
+    "location": "Mumbai",
+    "latitude": 19.076,
+    "longitude": 72.8777,
+    "source": "Free Press Journal",
+    "description": "Mumbai's vital local train services have resumed, providing relief to millions of commuters.",
+    "date_published": "2025-09-21T06:50:00Z"
+  },
+  {
+    "id": 9,
+    "title": "Jaipur hosts International Literature Festival",
+    "category": "Culture",
+    "location": "Jaipur",
+    "latitude": 26.9124,
+    "longitude": 75.7873,
+    "source": "India Today",
+    "description": "Jaipur hosted a prestigious literary festival attracting authors and visitors from across the world.",
+    "date_published": "2025-09-19T12:00:00Z"
+  },
+  {
+    "id": 10,
+    "title": "Assam CM inaugurates new hospital",
+    "category": "Health",
+    "location": "Guwahati",
+    "latitude": 26.1445,
+    "longitude": 91.7362,
+    "source": "The Hindu",
+    "description": "The Chief Minister of Assam inaugurated a new hospital to improve healthcare access in Guwahati.",
+    "date_published": "2025-09-21T10:00:00Z"
+  },
+  {
+    "id": 11,
+    "title": "Lucknow airport expansion plan approved",
+    "category": "Politics",
+    "location": "Lucknow",
+    "latitude": 26.8467,
+    "longitude": 80.9462,
+    "source": "Times of India",
+    "description": "Expansion of Lucknow airport has been approved, aiming to boost connectivity and economic growth.",
+    "date_published": "2025-09-18T16:30:00Z"
+  },
+  {
+    "id": 12,
+    "title": "Kolkata weather update Heavy rainfall",
+    "category": "Weather",
+    "location": "Kolkata",
+    "latitude": 22.5726,
+    "longitude": 88.3639,
+    "source": "Outlook India",
+    "description": "Heavy rainfall warnings have been issued for Kolkata, with possible disruptions expected.",
+    "date_published": "2025-09-21T08:10:00Z"
+  },
+  {
+    "id": 13,
+    "title": "Goa government relaxes beach restrictions",
+    "category": "Politics",
+    "location": "Goa",
+    "latitude": 15.2993,
+    "longitude": 74.124,
+    "source": "The Week",
+    "description": "Goa government eased beach access rules to encourage tourism while maintaining safety measures.",
+    "date_published": "2025-09-20T13:45:00Z"
+  },
+  {
+    "id": 14,
+    "title": "Chandigarh city council elections results",
+    "category": "Politics",
+    "location": "Chandigarh",
+    "latitude": 30.7333,
+    "longitude": 76.7794,
+    "source": "NDTV",
+    "description": "Results of Chandigarh city council elections were declared with various political parties securing seats.",
+    "date_published": "2025-09-19T19:30:00Z"
+  },
+  {
+    "id": 15,
+    "title": "Patna university students protest",
+    "category": "Society",
+    "location": "Patna",
+    "latitude": 25.5941,
+    "longitude": 85.1376,
+    "source": "Indian Express",
+    "description": "Students at Patna University held protests related to academic and social issues.",
+    "date_published": "2025-09-20T15:00:00Z"
+  },
+  {
+    "id": 16,
+    "title": "Srinagar valley receives snowfall",
+    "category": "Weather",
+    "location": "Srinagar",
+    "latitude": 34.0837,
+    "longitude": 74.7973,
+    "source": "Greater Kashmir",
+    "description": "The Srinagar valley experienced early snowfall marking the onset of the winter season.",
+    "date_published": "2025-09-21T07:20:00Z"
+  },
+  {
+    "id": 17,
+    "title": "Amritsar Golden Temple hosts festival",
+    "category": "Culture",
+    "location": "Amritsar",
+    "latitude": 31.633978,
+    "longitude": 74.872264,
+    "source": "The Hindu",
+    "description": "The Golden Temple in Amritsar hosted a significant festival attracting devotees from across India.",
+    "date_published": "2025-09-19T11:00:00Z"
+  }
+]

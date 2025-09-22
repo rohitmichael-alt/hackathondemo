@@ -1,4 +1,15 @@
-import React, { useEffect, useRef } from 'react';
+// SciFiMap.jsx
+// Responsibilities:
+// - Initialize a MapLibre map centered on India
+// - Load news items from public/rohit.json
+// - For each item, place a marker at (longitude, latitude)
+// - Choose the marker icon based on the item's category using SVGs in public/extras2
+// Notes for future automation:
+// - If rohit.json will be generated automatically, keep its shape stable:
+//   { title, description, source, category, location, latitude, longitude }
+// - The category-to-SVG mapping is defined in getCategoryIcon().
+//   New categories require adding a key here and an SVG file under public/extras2.
+import React, { useEffect, useRef, useCallback } from 'react';
 import maplibregl from 'maplibre-gl';
 import * as turf from '@turf/turf';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -12,6 +23,168 @@ const SciFiMap = () => {
   const cityMarkers = useRef([]);
   const lineId = 'drawn-line';
 
+  // Category to SVG mapping
+  // Maps high-level news categories to their corresponding SVG filenames.
+  // Icons must exist in public/extras2. Example path on the client: /extras2/Crime.svg
+  const getCategoryIcon = (category) => {
+    const categoryMap = {
+      'Crime': 'Crime.svg',
+      'Disasters': 'Disasters.svg',
+      'Technology': 'Technology.svg',
+      'Society': 'Society.svg',
+      'Culture': 'Culture.svg',
+      'Health': 'Health.svg',
+      'Politics': 'Politics.svg',
+      'Weather': 'Weather.svg',
+      'Sports': 'Sports.svg',
+      'Accidents': 'Accidents.svg'
+    };
+    return categoryMap[category] || 'TemporaryIcon.png';
+  };
+
+  const drawLine = useCallback(() => {
+    const lineData = {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: coordinates.current
+      }
+    };
+
+    const distance = turf.length(lineData, { units: 'kilometers' }).toFixed(2);
+    displayDistance(distance);
+
+    if (!mapRef.current.getSource(lineId)) {
+      mapRef.current.addSource(lineId, { type: 'geojson', data: lineData });
+      mapRef.current.addLayer({
+        id: lineId,
+        type: 'line',
+        source: lineId,
+        paint: {
+          'line-color': '#00f0ff',
+          'line-width': 3,
+          'line-blur': 1,
+          'line-opacity': 0.8
+        }
+      });
+    } else {
+      mapRef.current.getSource(lineId).setData(lineData);
+    }
+  }, []);
+
+  const initInteractiveDraw = useCallback(() => {
+    if (mapRef.current) {
+      mapRef.current.on('contextmenu', (e) => {
+        const coords = [e.lngLat.lng, e.lngLat.lat];
+        addSVGMarker(coords);
+        coordinates.current.push(coords);
+        drawLine();
+      });
+    }
+  }, [drawLine]);
+
+  // Fetch and render all news markers from public/rohit.json
+  // Each item should include: title, description, source, category, location, latitude, longitude
+  const loadNewsMarkers = useCallback(() => {
+    console.log('Loading news markers from rohit.json...');
+    
+    fetch('/rohit.json')
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log('Loaded news data:', data);
+        console.log('Number of news items:', data.length);
+        
+        // Future automation hook:
+        // If you need to normalize categories (e.g., lowercase, trim), do it here
+        // before iterating, so mapping stays consistent.
+        data.forEach((item, index) => {
+          // Check if item has valid coordinates
+          if (!item.latitude || !item.longitude) {
+            console.log('Skipping item without valid coordinates:', item.title);
+            return;
+          }
+          
+          console.log(`Creating marker ${index + 1}:`, item.title);
+          console.log('At coordinates:', item.latitude, item.longitude);
+          console.log('Category:', item.category);
+          
+          // Create a simple, visible marker container
+          // We keep a subtle circular frame and place the category SVG inside
+          const el = document.createElement('div');
+          el.style.width = '50px';
+          el.style.height = '50px';
+          el.style.backgroundColor = 'rgba(0, 240, 255, 0.2)';
+          el.style.border = '2px solid #ffffff';
+          el.style.borderRadius = '50%';
+          el.style.cursor = 'pointer';
+          el.style.zIndex = '1000';
+          el.style.display = 'flex';
+          el.style.alignItems = 'center';
+          el.style.justifyContent = 'center';
+          
+          // Resolve the category-specific SVG from public/extras2
+          // Example: /extras2/Crime.svg
+          const iconFile = getCategoryIcon(item.category);
+          const iconPath = `extras2/${iconFile}`;
+          
+          // Create img element for SVG. Using <img> avoids some background sizing issues
+          // and makes the intent explicit for future contributors.
+          const img = document.createElement('img');
+          img.src = iconPath;
+          img.style.width = '30px';
+          img.style.height = '30px';
+          img.style.objectFit = 'contain';
+          // If your SVGs are dark and the map background is dark, consider enabling the line below.
+          // This inverts the icon to white for visibility.
+          // img.style.filter = 'brightness(0) invert(1)';
+          el.appendChild(img);
+          
+          console.log('Marker element created with icon:', iconFile);
+          console.log('Full icon path:', iconPath);
+          console.log('Category:', item.category);
+          
+          // Create popup with news details matching the demo format
+          const popup = new maplibregl.Popup({
+            offset: 25,
+            closeButton: true,
+            maxWidth: '300px'
+          }).setHTML(`
+            <div style="color: #00f0ff; padding: 15px; background: rgba(0, 0, 0, 0.9); border: 2px solid #00f0ff; border-radius: 8px;">
+              <h3 style="margin: 0 0 10px 0; color: #00f0ff; font-size: 16px;">📰 ${item.title}</h3>
+              <p style="margin: 0 0 10px 0; color: #b0f0ff; font-size: 14px;">${item.description || 'No description available'}</p>
+              <div style="margin: 0; color: #80e0ff; font-size: 12px;">
+                <p style="margin: 2px 0;"><strong>📍 Location:</strong> ${item.location || 'Unknown'}</p>
+                <p style="margin: 2px 0;"><strong>📡 Source:</strong> ${item.source || 'News'}</p>
+                <p style="margin: 2px 0;"><strong>🏷️ Category:</strong> ${item.category || 'General'}</p>
+                <p style="margin: 2px 0;"><strong>🌐 Coordinates:</strong> ${item.latitude.toFixed(4)}, ${item.longitude.toFixed(4)}</p>
+              </div>
+            </div>
+          `);
+          
+          // Create and add map marker with our custom element
+          new maplibregl.Marker(el)
+            .setLngLat([item.longitude, item.latitude])
+            .setPopup(popup)
+            .addTo(mapRef.current);
+            
+          console.log(`Marker ${index + 1} added to map successfully at:`, [item.longitude, item.latitude]);
+        });
+        
+        console.log(`Successfully loaded ${data.length} news markers from rohit.json`);
+      })
+      .catch(err => {
+        console.error('Failed to load news from rohit.json:', err);
+        // Fallback: show error message
+        alert('Failed to load news data. Please check if rohit.json exists in the public folder.');
+      });
+  }, []);
+
+  // Initialize MapLibre, layers and then load markers
   useEffect(() => {
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
@@ -41,17 +214,10 @@ const SciFiMap = () => {
     map.on('zoom', handleZoomLevel);
 
     return () => map.remove();
-  }, []);
+  }, [initInteractiveDraw, loadNewsMarkers]);
 
-  const initInteractiveDraw = () => {
-    mapRef.current.on('contextmenu', (e) => {
-      const coords = [e.lngLat.lng, e.lngLat.lat];
-      addSVGMarker(coords);
-      coordinates.current.push(coords);
-      drawLine();
-    });
-  };
 
+  // Decorative India border layer (optional visual context)
   const addIndiaBorders = () => {
     mapRef.current.addSource('india-border', {
       type: 'geojson',
@@ -75,6 +241,7 @@ const SciFiMap = () => {
     });
   };
 
+  // Helper for manually dropping a demo marker (right-click)
   const addSVGMarker = (coords) => {
     const el = document.createElement('div');
     el.style.width = '40px';
@@ -91,35 +258,6 @@ const SciFiMap = () => {
     markers.current.push(marker);
   };
 
-  const drawLine = () => {
-    const lineData = {
-      type: 'Feature',
-      geometry: {
-        type: 'LineString',
-        coordinates: coordinates.current
-      }
-    };
-
-    const distance = turf.length(lineData, { units: 'kilometers' }).toFixed(2);
-    displayDistance(distance);
-
-    if (!mapRef.current.getSource(lineId)) {
-      mapRef.current.addSource(lineId, { type: 'geojson', data: lineData });
-      mapRef.current.addLayer({
-        id: lineId,
-        type: 'line',
-        source: lineId,
-        paint: {
-          'line-color': '#00f0ff',
-          'line-width': 3,
-          'line-blur': 1,
-          'line-opacity': 0.8
-        }
-      });
-    } else {
-      mapRef.current.getSource(lineId).setData(lineData);
-    }
-  };
 
   const displayDistance = (km) => {
     let existing = document.getElementById('distance-display');
@@ -153,83 +291,6 @@ const SciFiMap = () => {
     });
   };
 
-  const loadNewsMarkers = () => {
-    console.log('Loading news markers from geo_news.json...');
-    
-    fetch('/geo_news.json')
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        console.log('Loaded news data:', data);
-        console.log('Number of news items:', data.length);
-        
-        data.forEach((item, index) => {
-          // Check if item has valid geolocation data
-          if (!item.geolocation || !item.geolocation.lat || !item.geolocation.lon) {
-            console.log('Skipping item without valid coordinates:', item.title);
-            return;
-          }
-          
-          console.log(`Creating marker ${index + 1}:`, item.title);
-          console.log('At coordinates:', item.geolocation.lat, item.geolocation.lon);
-          
-          // Create a simple, visible marker
-          const el = document.createElement('div');
-          el.style.width = '50px';
-          el.style.height = '50px';
-          el.style.backgroundColor = '#00f0ff';
-          el.style.border = '3px solid #ffffff';
-          el.style.borderRadius = '50%';
-          el.style.cursor = 'pointer';
-          el.style.boxShadow = '0 0 20px #00f0ff';
-          el.style.zIndex = '1000';
-          
-          // Use TemporaryIcon.png as background image
-          el.style.backgroundImage = `url('TemporaryIcon.png')`;
-          el.style.backgroundSize = 'contain';
-          el.style.backgroundRepeat = 'no-repeat';
-          el.style.backgroundPosition = 'center';
-          
-          console.log('Marker element created:', el);
-          
-          // Create popup with news details
-          const popup = new maplibregl.Popup({
-            offset: 25,
-            closeButton: true,
-            maxWidth: '300px'
-          }).setHTML(`
-            <div style="color: #00f0ff; padding: 15px; background: rgba(0, 0, 0, 0.9); border: 2px solid #00f0ff; border-radius: 8px;">
-              <h3 style="margin: 0 0 10px 0; color: #00f0ff; font-size: 16px;">📰 ${item.title}</h3>
-              <p style="margin: 0 0 10px 0; color: #b0f0ff; font-size: 14px;">${item.summary || 'No summary available'}</p>
-              <div style="margin: 0; color: #80e0ff; font-size: 12px;">
-                <p style="margin: 2px 0;"><strong>📍 Location:</strong> ${item.geolocation.name || 'Unknown'}</p>
-                <p style="margin: 2px 0;"><strong>📡 Source:</strong> ${item.source || 'News'}</p>
-                <p style="margin: 2px 0;"><strong>🌐 Coordinates:</strong> ${item.geolocation.lat.toFixed(4)}, ${item.geolocation.lon.toFixed(4)}</p>
-              </div>
-            </div>
-          `);
-          
-          // Create and add marker
-          const marker = new maplibregl.Marker(el)
-            .setLngLat([item.geolocation.lon, item.geolocation.lat])
-            .setPopup(popup)
-            .addTo(mapRef.current);
-            
-          console.log(`Marker ${index + 1} added to map successfully at:`, [item.geolocation.lon, item.geolocation.lat]);
-        });
-        
-        console.log(`Successfully loaded ${data.length} news markers from geo_news.json`);
-      })
-      .catch(err => {
-        console.error('Failed to load news from geo_news.json:', err);
-        // Fallback: show error message
-        alert('Failed to load news data. Please check if geo_news.json exists in the public folder.');
-      });
-  };
 
   const handleZoomLevel = () => {
     const zoom = mapRef.current.getZoom();
