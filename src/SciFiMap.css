@@ -63,13 +63,26 @@ html, body, #map {
   }
 }
 
+/* Ensure popups render above markers and HUD */
+.maplibregl-popup {
+  position: relative;
+  z-index: 100000 !important;
+}
+
+/* Ensure markers sit below popups without breaking map positioning */
+.maplibregl-marker {
+  z-index: 1 !important; /* keep default absolute positioning */
+}
+
 /* Custom popup styling */
-.custom-popup .maplibregl-popup-content {
-  background: rgba(0, 0, 0, 0.95) !important;
-  border: 2px solid #00f0ff !important;
-  border-radius: 8px !important;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.5) !important;
+.custom-popup .maplibregl-popup-content,
+.maplibregl-popup .maplibregl-popup-content {
+  background: rgba(0, 240, 255, 0.35) !important; /* darker neon panel */
+  border: 2px solid #ffffff !important; /* white outline */
+  border-radius: 10px !important;
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.75) !important;
   color: #00f0ff !important;
+  backdrop-filter: blur(4px);
 }
 
 .custom-popup .maplibregl-popup-close-button {

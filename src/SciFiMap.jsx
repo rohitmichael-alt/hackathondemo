@@ -113,16 +113,18 @@ const SciFiMap = () => {
           console.log('At coordinates:', item.latitude, item.longitude);
           console.log('Category:', item.category);
           
-          // Create a simple, visible marker container
-          // We keep a subtle circular frame and place the category SVG inside
+          // Create a marker container with soft green background (no white border)
           const el = document.createElement('div');
           el.style.width = '50px';
           el.style.height = '50px';
-          el.style.backgroundColor = 'rgba(0, 240, 255, 0.2)';
-          el.style.border = '2px solid #ffffff';
+          // Neon-ish green with a bit more opacity to stand out on dark basemap
+          // Transparent neon cyan to blend with basemap accent (#00f0ff)
+          el.style.backgroundColor = 'rgba(0, 240, 255, 0.28)';
+          el.style.border = 'none';
           el.style.borderRadius = '50%';
           el.style.cursor = 'pointer';
-          el.style.zIndex = '1000';
+          // Keep below popup; rely on CSS for stacking
+          el.style.zIndex = '1';
           el.style.display = 'flex';
           el.style.alignItems = 'center';
           el.style.justifyContent = 'center';
@@ -136,12 +138,11 @@ const SciFiMap = () => {
           // and makes the intent explicit for future contributors.
           const img = document.createElement('img');
           img.src = iconPath;
-          img.style.width = '30px';
-          img.style.height = '30px';
+          img.style.width = '36px';
+          img.style.height = '36px';
           img.style.objectFit = 'contain';
-          // If your SVGs are dark and the map background is dark, consider enabling the line below.
-          // This inverts the icon to white for visibility.
-          // img.style.filter = 'brightness(0) invert(1)';
+          // Force icon to white for visibility on dark basemap
+          img.style.filter = 'brightness(0) invert(1)';
           el.appendChild(img);
           
           console.log('Marker element created with icon:', iconFile);
@@ -154,7 +155,7 @@ const SciFiMap = () => {
             closeButton: true,
             maxWidth: '300px'
           }).setHTML(`
-            <div style="color: #00f0ff; padding: 15px; background: rgba(0, 0, 0, 0.9); border: 2px solid #00f0ff; border-radius: 8px;">
+            <div style="color: #00f0ff; padding: 15px; border: 2px solid #ffffff; border-radius: 8px;">
               <h3 style="margin: 0 0 10px 0; color: #00f0ff; font-size: 16px;">📰 ${item.title}</h3>
               <p style="margin: 0 0 10px 0; color: #b0f0ff; font-size: 14px;">${item.description || 'No description available'}</p>
               <div style="margin: 0; color: #80e0ff; font-size: 12px;">
